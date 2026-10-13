@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Touchless Presentation Control</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">&#9757;</span>
+      <div>
+        <h1>Touchless Presentation Control</h1>
+        <p>Gesture-driven slides with MediaPipe Hands &amp; Pose</p>
+      </div>
+    </div>
+    <div class="status-strip">
+      <span class="pill" id="pill-camera">Camera: idle</span>
+      <span class="pill" id="pill-tracking">Tracking: idle</span>
+      <span class="pill" id="pill-pause">Active</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls">
+      <h2>1. Presentation</h2>
+      <form id="upload-form">
+        <label class="file-drop" for="file-input">
+          <input type="file" id="file-input" name="file" accept=".pdf,.ppt,.pptx" />
+          <strong>Choose a PPTX or PDF</strong>
+          <span id="file-name">No file selected</span>
+        </label>
+        <button type="submit" class="btn primary" id="upload-btn">Upload &amp; validate</button>
+      </form>
+      <p class="hint" id="upload-message">Waiting for a presentation.</p>
+
+      <h2>2. Session</h2>
+      <div class="button-row">
+        <button class="btn go" id="start-btn" disabled>Start camera</button>
+        <button class="btn stop" id="stop-btn" disabled>Stop</button>
+      </div>
+
+      <h2>3. Manual controls</h2>
+      <div class="button-grid">
+        <button class="btn tiny" data-action="prev">Prev slide</button>
+        <button class="btn tiny" data-action="next">Next slide</button>
+        <button class="btn tiny" data-action="scroll_up">Scroll up</button>
+        <button class="btn tiny" data-action="scroll_down">Scroll down</button>
+        <button class="btn tiny" data-action="zoom_in">Zoom in</button>
+        <button class="btn tiny" data-action="zoom_out">Zoom out</button>
+        <button class="btn tiny" data-action="toggle_pointer">Pointer mode</button>
+        <button class="btn tiny" data-action="toggle_pause">Pause / resume</button>
+        <button class="btn tiny" data-action="toggle_presentation">Presentation mode</button>
+        <button class="btn tiny" data-action="confirm">Confirm / arm</button>
+      </div>
+
+      <h2>Gesture map</h2>
+      <ul class="legend">
+        <li><span>Index moves right / left</span><em>Next / previous slide</em></li>
+        <li><span>Index moves up / down</span><em>Scroll up / down</em></li>
+        <li><span>Open palm</span><em>Pause detection</em></li>
+        <li><span>Closed fist</span><em>Pause / resume toggle</em></li>
+        <li><span>Thumbs up</span><em>Start / confirm</em></li>
+        <li><span>Two fingers</span><em>Pointer mode</em></li>
+        <li><span>Pinch</span><em>Zoom out</em></li>
+        <li><span>Spread pinched fingers</span><em>Zoom in</em></li>
+        <li><span>Both hands raised</span><em>Presentation mode</em></li>
+        <li><span>No hand</span><em>Suspend commands</em></li>
+      </ul>
+    </section>
+
+    <section class="panel stage">
+      <div class="stage-head">
+        <h2 id="deck-title">No presentation loaded</h2>
+        <span class="counter"><b id="slide-index">0</b> / <span id="slide-count">0</span></span>
+      </div>
+      <div class="viewport" id="viewport">
+        <img id="slide" alt="Current slide" />
+        <div class="stage-empty" id="stage-empty">Upload a presentation to begin</div>
+      </div>
+      <div class="viewer-bar">
+        <span>Zoom <b id="zoom-value">100%</b></span>
+        <span>Scroll <b id="scroll-value">0%</b></span>
+        <span class="viewer-hint">Server-side rendering &middot; gestures apply instantly</span>
+      </div>
+    </section>
+
+    <section class="panel camera">
+      <h2>Live camera &amp; HUD</h2>
+      <div class="cam-frame">
+        <img id="video" src="" alt="Camera preview" />
+        <div class="cam-off" id="cam-off">Camera off</div>
+      </div>
+      <div class="hud">
+        <div class="hud-row"><span>Gesture</span><b id="hud-gesture" class="mono">NONE</b></div>
+        <div class="hud-flags">
+          <span class="flag" id="flag-armed">Armed</span>
+          <span class="flag" id="flag-pointer">Pointer</span>
+          <span class="flag" id="flag-presenting">Presenting</span>
+          <span class="flag" id="flag-paused">Paused</span>
+          <span class="flag" id="flag-reliable">Tracking OK</span>
+        </div>
+      </div>
+      <h2>Activity log</h2>
+      <ul class="log" id="log"></ul>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span id="global-message">Ready.</span>
+    <span class="keys">Keyboard: &larr; &rarr; slides &middot; &uarr; &darr; scroll &middot; +/- zoom &middot; P pointer &middot; Space pause</span>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
